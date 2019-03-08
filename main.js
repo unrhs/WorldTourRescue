@@ -7,16 +7,44 @@ var ctx = canvas.getContext('2d');
 // Insertamos todas las imágenes que ocuparemos en el juego Backgrounds y enemigos
 // Nótese  que se insertan como variables.
 
+//var loaded = false;
+var music = new Audio();
+// music.addEventListener('loadeddata', function()
+// {
+//     loaded=true;
+//     start();
+// },false);
+
+music.src = './Sounds/gmusic.mp3'
+music.loop = true;
+
+var dun = new Audio();
+    dun.src = "./Sounds/dun-dun-dun.mp3"
+var eleph = new Audio();
+    eleph.src = "./Sounds/elephant.mp3"
+var takeOff = new Audio();
+    takeOff.src = "./Sounds/takeOff.mp3"
+var fillGas = new Audio();
+    fillGas.src = "./Sounds/fillGas.mp3"
+var gong = new Audio();
+    gong.src = "./Sounds/gong.mp3"
+var mummy = new Audio();
+    mummy.src = "./Sounds/mummy.mp3"
+var indian = new Audio();
+    indian.src = "./Sounds/indian.mp3"
+
 
 var imagen1 = './Images/back1.jpg'
 var imagen2 = './Images/back2.jpg'
 var imagen3 = './Images/back3.jpg'
 var imagen4 = './Images/back4.jpg'
+var imagen5 = './Images/back5.jpg'
 var mommy = 'https://vignette.wikia.nocookie.net/pokeespectaculos/images/6/68/Momia_.png/revision/latest?cb=20120330203246&path-prefix=es'
 var warrior = './Images/warrior.png'
 var hindu = './Images/hindu.png'
 var elepaphant = './Images/elephant.png'
 var gasPremium = './Images/gas.png'
+var f16air = './Images/f-16.png'
 var enemies = [];
 var enemiesA = [];
 var enemiesB = [];
@@ -71,14 +99,15 @@ class Thegood{
 function Enemy(x){
     this.x = x
     this.y = 0
-    this.width = 54
-    this.height = 54
+    this.width = 62
+    this.height = 62
     this.imagen = new Image()
     this.imagen.src = mommy
     this.imagen.onload = function(){
         this.draw()
+        
     }.bind(this)
-    
+    mummy.play()
     this.draw = function(){
         this.y++
         ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height)
@@ -87,6 +116,7 @@ function Enemy(x){
 
 //GASOLINE
 function NotEnemy(x){
+    this.ene= false
     this.x = x
     this.y = 0
     this.width = 54
@@ -104,22 +134,24 @@ function NotEnemy(x){
 }
 
 function EnemyA(x){
+    this.ene= true
     this.x = x
     this.y = 0
-    this.width = 54
-    this.height = 54
+    this.width = 72
+    this.height = 72
     this.imagen = new Image()
     this.imagen.src = warrior
     this.imagen.onload = function(){
         this.draw()
     }.bind(this)
-    
+    gong.play()
     this.draw = function(){
         this.y++
         ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height)
     }
 }
 function EnemyB(x){
+    this.ene= true
     this.x = x
     this.y = 0
     this.width = 54
@@ -129,7 +161,7 @@ function EnemyB(x){
     this.imagen.onload = function(){
         this.draw()
     }.bind(this)
-    
+    indian.play()
     this.draw = function(){
         this.y++
         ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height)
@@ -154,17 +186,19 @@ function EnemyB(x){
 
 class EnemyC {
     constructor(x=canvas.width){
+        this.ene= true
         this.x = x;
         this.y = 475;
-        this.width = 100
-        this.height = 80
+        this.width = 120
+        this.height = 90
         this.imagen = new Image()
         this.imagen.src = elepaphant
     }
     
     draw(){
-        if(frames % 30) this.x -= 5;
+        if(frames % 20) this.x -= 5;
         ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height)
+        eleph.play();
     }
 }
 
@@ -186,20 +220,16 @@ class Fog{
     }
 }
 
-
-
 function gasolineDisplay() {
     //health
     ctx.font = "bold 14px Arial";
-    ctx.fillText("Gasoline Premium:"+gasoline, 80, 20);
+    ctx.fillText("Gasoline Premium:" + gasoline, 80, 20);
 }
-
-
 
 // para el background necesito un arreglo de imágenes que tomaran las variables ya descritas. 
 
 
-var misBackground = [imagen1,imagen2,imagen3,imagen4]
+var misBackground = [imagen1,imagen2,imagen3,imagen4,imagen5]
 class Background{
     constructor(imagen,secondImage){
         this.x = 0
@@ -211,13 +241,12 @@ class Background{
         this.level = 0
         this.imagen1 = new Image()
         this.imagen1.src = secondImage
-
     }       
 
   //Imprimimos las imágenes de background.  
 
     draw(image,secondImage){
-          this.x;
+        this.x;
         this.level
         this.imagen.src = image
         this.imagen1.src = secondImage
@@ -225,12 +254,8 @@ class Background{
 
        ctx.drawImage(this.imagen,this.x,this.y,this.width,this.height);          
        ctx.drawImage(this.imagen,this.x + this.width,this.y,this.width,this.height); 
-                   
-        
-        
-         ctx.drawImage(this.imagen1,this.x + this.width,this.y,this.width,this.height); 
-   
-    }
+       ctx.drawImage(this.imagen1,this.x + this.width,this.y,this.width,this.height); 
+     }
 }
 
 
@@ -251,12 +276,24 @@ var notEnemy3 = new NotEnemy(384)
 
 
 newBackground=()=>{            
-
 }
 var theGood = new Thegood("Space");
 
 var frames = 0;
-var interval = setInterval(function(){
+var interval;
+
+
+//ARREGLO DE START
+
+function start(){
+    music.play();
+    clearInterval(interval); 
+    interval = setInterval(update, 1000/80)
+}
+
+
+
+function update(){
     // sumamos cada cuadro que dibujamos
     frames++
     // borramos el canvas
@@ -279,10 +316,17 @@ var interval = setInterval(function(){
     drawFog();
     checkCollition();
     gasolineDisplay();
-}, 1000/80)
+    drainGasoline();
+   }
 
 // Declaramos la cantidad de enemigos que queremos. 
-
+function drainGasoline(){
+    if(frames % 64 === 0){
+       gasoline -= 20
+    }
+    if (gasoline <= 0) 
+    gameOver()
+}
 function generateEnemy(){
     if(frames % 64 === 0 && frames >= 900 && frames <= 1800){
         const x = Math.floor(Math.random() * 8)
@@ -308,12 +352,8 @@ function generateNotEnemy(){
     }
 }
 
-
-
-
-
 function generateEnemyA(){
-    if(frames % 64 === 0 && frames <= 900 ){
+    if(frames % 120 === 0 && frames <= 900 ){
         const x = Math.floor(Math.random() * 8)
         enemiesA.push(new EnemyA(x * 164))
     }
@@ -326,7 +366,7 @@ function drawEnemiesA(){
 }
 
 function generateEnemyB(){
-    if(frames % 64 === 0 && frames >= 1800){
+    if(frames % 64 === 0 && frames >= 1800 && frames <= 2700){
         const x = Math.floor(Math.random() * 8)
         enemiesB.push(new EnemyB(x * 164))
     }
@@ -339,7 +379,7 @@ function drawEnemiesB(){
 }
 
 function generateEnemyC() {
-    if (frames % 2500 == 0 || frames % 550 == 0 && frames >= 900 && frames <= 1800) {
+    if (frames % 2500 == 0 || frames % 550 == 0 && frames >= 1000 && frames <= 1600) {
         let enemyC = new EnemyC();
         enemiesC.push(enemyC);
     }
@@ -351,32 +391,11 @@ function drawEnemiesC() {
         return enemiesC.splice(index, 1);  
         } 
         enemyC.draw();
-        /*if(ship.collision(crater)){
-            craters.splice(index, 1); 
-            impacts++;
-        }*/
+
     })
 }
 
-/*function generateEnemyC(){
-    if(frames % 64 === 0){
-        enemiesC.push(enemyC1)
-    }
-}
 
-function drawEnemiesC(){
-    enemiesC.forEach(function(enemyC1){
-        enemyC1.draw()
-    })
-}*/
-
-// function checkCollition(){
-//     enemies.forEach(enemy=>{
-//         if(theGoods.checkIfTouch(enemy)){
-//             gameOver()
-//         }
-//     })
-// }
 
 function generateFog(){
     //definir cada cuando creo pipes
@@ -403,6 +422,11 @@ function gameOver(){
     ctx.fillStyle = "white"
     ctx.fillText('GAME OVER',490,100)
     ctx.fillText(fogs.length, 630,150)
+    music.pause();
+    takeOff.pause();
+    eleph.pause();
+    dun.play();
+    interval = null;
 }
 function checkCollition(){
     enemies.forEach(enemy=>{
@@ -410,6 +434,15 @@ function checkCollition(){
             gameOver()
         }
     
+    })
+
+    notEnemies.forEach(gas=>{
+        if(theGood.collision(gas)){
+            gasoline += 50
+            notEnemies.splice(gas,1)
+            fillGas.play()
+        }
+        console.log('gasolina',gasoline)
     })
 
     enemiesA.forEach(enemyA=>{
@@ -436,7 +469,7 @@ function restart(){
     frames = 0;
     interval = undefined;
     fogs=[];
-   
+    music.currentTime = 0
 }
 
 
@@ -444,21 +477,21 @@ function restart(){
 addEventListener('keydown', function(e){
     if(e.keyCode === 37){
         if(theGood.x <= 0) return
-        theGood.x -= 50;
+        theGood.x -= 40;
     }
     if(e.keyCode === 39){
         if(theGood.x >= canvas.width - 64) return
-        theGood.x += 50;
+        theGood.x += 40;
     }
     if(e.keyCode === 38){
         theGood.y -= 16;
-               
+        takeOff.volume = .1;
+        takeOff.play();
              }
     if(e.keyCode === 32){
                 theGood.y -= 140;
                      }  
-    
 })
 
- start()
+start()
 
