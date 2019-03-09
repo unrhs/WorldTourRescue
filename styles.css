@@ -12,34 +12,25 @@ body {
  #main{
     display: none;
   }
-  #newGame, #introBtn, #backBtn{
+
+  #music, #introBtn, #Rules{
     text-align: center;
     vertical-align: middle;
     border: 2px solid grey;
-    border-radius: 7px;
     background-color: black;
-    color: orangeRed;
+    color: goldenrod;
     font-size: 32px;
     font-weight: bold;
     font-family: "Courier New";
-    width: 5em;
+    width: 100px;
     margin: 5px auto;
+    float: left;
+
    
   }
   #theHead{
     margin: auto;
     color: orange;
-    font-size: 2em;
+    font-size: 40px;
     font-family: "Courier New";
-  }
-  #intro{
-    margin: auto;
-    color: orange;
-    font-size: 1em;
-    font-family: "Courier New";
-    display: none;
-    background-color: inherit;
-  }
-  #backBtn{
-    display: none;
   }
